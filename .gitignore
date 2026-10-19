@@ -1,0 +1,17 @@
+data/
+.idea/
+.vscode/
+node_modules/
+.env
+.env.*
+*.log
+*.pid
+__pycache__/
+*.pyc
+tools/*
+!tools/*.py
+!tools/*.md
+!tools/*LICENSE.txt
+!tools/requirements-local.txt
+
+sample/*.mp4
