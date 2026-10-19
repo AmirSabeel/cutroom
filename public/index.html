@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Cutroom — Make more of your video</title><meta name="description" content="Your English video clipping workspace. Create captioned vertical clips from longer videos."><link rel="stylesheet" href="/style.css"></head>
+<body>
+  <aside class="sidebar">
+    <a href="/" class="brand"><span class="brand-mark">c<span>•</span></span>cutroom<span class="beta">LOCAL</span></a>
+    <div class="workspace"><span class="avatar">Y</span><div>Your workspace<small>English studio</small></div><span class="workspace-dot"></span></div>
+    <p class="nav-label">WORKSPACE</p>
+    <nav><button class="nav-item active" id="nav-create"><span>＋</span>Create clips</button><button class="nav-item" id="nav-projects"><span>▤</span>My projects <b id="project-count">0</b></button></nav>
+    <div class="sidebar-bottom"><div class="local-note"><span class="status-dot"></span>Running on your computer<p>Your projects stay here. AI mode sends audio and transcript to OpenAI.</p></div><button class="nav-item" id="settings-open"><span>⚙</span>Setup & help</button><div class="profile"><span class="avatar small">Y</span><span>Your local studio</span><span>EN</span></div></div>
+  </aside>
+  <main>
+    <header class="topbar"><div>Workspace <span>/</span> <strong id="breadcrumb">Create clips</strong></div><button class="connection" id="connection"><span class="status-dot amber"></span>Checking setup</button></header>
+    <p id="connection-error" class="error" role="status" hidden>Cutroom is offline. Double-click Start Cutroom.cmd in the app folder. This page will reconnect automatically.</p>
+    <section id="create-view">
+      <div class="page-heading"><p class="eyebrow">LESS EDITING. MORE CREATING.</p><h1>Good moments.<br><span>Made into great clips.</span></h1><p>Give your long video a shorter story. Turn English videos<br class="desktop-break"> into captioned clips, ready for your next post.</p></div>
+      <div class="studio-grid">
+        <section class="upload-card">
+          <div class="card-top"><h2>Start with a video</h2><span class="pill">01 / UPLOAD</span></div>
+          <label class="drop-zone" id="drop-zone" for="video-file"><input id="video-file" type="file" accept="video/mp4,.mp4"><span class="upload-icon">↥</span><strong id="file-label">Drop your video here</strong><span id="file-detail">or <u>browse files</u> on your computer</span><small>MP4 · Up to 500 MB · Up to 10 minutes</small></label>
+          <div class="form-row"><label>Clip length<select id="clip-length"><option value="30">About 30 seconds</option><option value="45" selected>About 45 seconds</option><option value="60">About 60 seconds</option></select></label><label>Output format<div class="fixed-field">▯ &nbsp; Vertical · 9:16 <span>720p</span></div></label></div>
+          <div class="mode-field"><label for="processing-mode">Find your moments</label><select id="processing-mode"><option value="local">Free local subtitles + transcript excerpts</option><option value="ai">OpenAI selection + subtitles (paid)</option><option value="srt">Use my English subtitles (.srt)</option></select><p id="mode-hint">Checking available processing options…</p></div>
+          <div id="srt-field" hidden><label class="subtitle-picker" for="srt-file"><span>↗ &nbsp; Choose English SRT file</span><input id="srt-file" type="file" accept=".srt"><small id="srt-name">Match the timings to your video</small></label></div>
+          <div class="mode-field"><button type="button" class="secondary" id="new-caption-style">Caption style</button><p id="caption-style-summary">Arial · White · 42 px · Bottom</p></div><details class="crop-settings"><summary>Framing options <span>Center crop</span></summary><label for="crop-position">Horizontal crop position</label><input id="crop-position" type="range" min="0" max="100" value="50"><div class="range-labels"><span>Left</span><span>Center</span><span>Right</span></div><p>Use this to keep your speaker in frame. Automatic speaker tracking comes later.</p></details>
+          <div id="upload-status" class="upload-status" hidden><label id="upload-message">Uploading…</label><progress id="upload-progress" max="100" value="0"></progress></div>
+          <p id="form-error" class="error" role="alert" hidden></p>
+          <button class="primary generate" id="generate">Create my clips <span>↗</span></button>
+          <p class="under-button">Up to 3 clips · English captions · MP4 downloads</p>
+        </section>
+        <aside class="guide-card"><div class="guide-heading"><span class="tiny-star">✳</span><span>THE SHORT VERSION</span></div><div class="format-art" aria-hidden="true"><div class="wide-frame"><div class="art-lines"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span>YOUR LONG VIDEO</span></div><div class="connector-line"></div><div class="short-frames"><div><span>01</span><i></i><i></i></div><div><span>02</span><i></i><i></i></div><div><span>03</span><i></i><i></i></div></div></div><h2>One video.<br>More possibilities.</h2><ol class="steps"><li><span>1</span><div><strong>Bring the conversation</strong><p>Podcasts, interviews, tutorials. Start with clear English audio.</p></div></li><li><span>2</span><div><strong>Make room for the good parts</strong><p>Choose AI moments or excerpts from your own timed subtitles.</p></div></li><li><span>3</span><div><strong>Review. Download. Share.</strong><p>Vertical framing and readable captions, in a ready-to-use MP4.</p></div></li></ol><div class="guide-footer">MADE FOR <span>Shorts &nbsp; / &nbsp; Reels &nbsp; / &nbsp; TikTok</span></div></aside>
+      </div>
+      <section class="recent-section"><div class="section-title"><h2>Recent projects</h2><button class="text-button" id="view-all">View all projects ↗</button></div><div id="recent-projects"></div></section>
+    </section>
+    <section id="projects-view" hidden><div class="page-heading compact"><p class="eyebrow">YOUR CUTTING ROOM</p><h1>My projects<span class="orange">.</span></h1><p>Every upload, every moment, all in one place.</p></div><div id="all-projects"></div></section>
+    <section id="detail-view" hidden><button class="text-button back" id="back-projects">← All projects</button><div id="project-detail"></div></section>
+    <footer>cutroom <span>A little less long-form. A little more possibility.</span><small>LOCAL EDITION · ENGLISH</small></footer>
+  </main>
+  <dialog id="settings"><div class="dialog-heading"><h2>Your studio setup</h2><button id="settings-close" aria-label="Close setup">×</button></div><div id="setup-status"></div><h3>Free automatic subtitles</h3><p>Choose <strong>Free local subtitles + transcript excerpts</strong>. English speech recognition runs on this computer without an API key or API charges. Processing can take several minutes. Clips use transcript excerpts without AI moment ranking.</p><h3>Paid AI selection</h3><p>Use <strong>Start with AI.cmd</strong> in the app folder. It asks for your OpenAI API key in a hidden local prompt. The key stays in the server process and is never sent to this page.</p><p>If the app is already running, close it using <strong>Stop Cutroom.ps1</strong> first. AI processing uses your OpenAI API account and may incur charges.</p><h3>Try it without an API key</h3><p>Choose <strong>Use my English subtitles</strong>, then upload an MP4 and its matching SRT file. Cutroom makes real captioned clips using transcript excerpts. This mode does not use AI to pick moments.</p><h3>What this version includes</h3><p>Local project history, background processing, adjustable horizontal crop, burned-in captions, MP4 and SRT downloads. Keep the local server running while clips render.</p><p class="setup-note">Accounts, payments, link imports and automatic face tracking are not part of this first version.</p></dialog>
+  <dialog id="caption-editor" aria-labelledby="caption-editor-title">
+    <div class="dialog-heading"><h2 id="caption-editor-title">Caption style</h2><button id="caption-close" aria-label="Close caption style">×</button></div>
+    <div class="caption-editor-layout"><div class="caption-controls">
+      <label for="caption-font">Font</label><select id="caption-font"><option>Arial</option><option>Georgia</option><option>Verdana</option><option>Courier New</option></select>
+      <label for="caption-color">Colour</label><input id="caption-color" type="color" value="#ffffff">
+      <label for="caption-size">Size <output id="caption-size-value">42 px</output></label><input id="caption-size" type="range" min="28" max="64" value="42">
+      <label for="caption-position">Position</label><select id="caption-position"><option value="top">Top</option><option value="center">Centre</option><option value="bottom" selected>Bottom</option></select>
+      <p>Colours keep a dark outline for readability. Styles are included in MP4 exports; SRT downloads contain plain text.</p>
+    </div><div><canvas id="caption-preview" width="240" height="426" aria-label="Sample caption style preview"></canvas><p class="caption-preview-note">Sample preview · Final line wrapping may vary</p></div></div>
+    <p id="caption-error" class="error" role="alert" hidden></p><button class="primary" id="caption-apply">Use this style</button>
+  </dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

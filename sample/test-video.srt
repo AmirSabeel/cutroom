@@ -1,0 +1,31 @@
+1
+00:00:00,000 --> 00:00:12,000
+Synthetic pipeline test. Caption 1 checks the local render, not AI transcription.
+
+2
+00:00:12,000 --> 00:00:24,000
+Synthetic pipeline test. Caption 2 checks the local render, not AI transcription.
+
+3
+00:00:24,000 --> 00:00:36,000
+Synthetic pipeline test. Caption 3 checks the local render, not AI transcription.
+
+4
+00:00:36,000 --> 00:00:48,000
+Synthetic pipeline test. Caption 4 checks the local render, not AI transcription.
+
+5
+00:00:48,000 --> 00:01:00,000
+Synthetic pipeline test. Caption 5 checks the local render, not AI transcription.
+
+6
+00:01:00,000 --> 00:01:12,000
+Synthetic pipeline test. Caption 6 checks the local render, not AI transcription.
+
+7
+00:01:12,000 --> 00:01:24,000
+Synthetic pipeline test. Caption 7 checks the local render, not AI transcription.
+
+8
+00:01:24,000 --> 00:01:36,000
+Synthetic pipeline test. Caption 8 checks the local render, not AI transcription.
