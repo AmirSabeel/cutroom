@@ -26,7 +26,7 @@ function setFile(file) {
 function updateMode() {
   const mode=$('#processing-mode').value;
   $('#srt-field').hidden=mode!=='srt';
-  $('#mode-hint').textContent=mode==='local'?'Free speech recognition on this computer. No API charges. Clips use transcript excerpts, without AI moment ranking.':mode==='srt'?'Creates transcript-aligned excerpts locally. AI moment selection is not used.':config?.aiReady?'Audio and transcript are sent to OpenAI. Your API account is billed for usage.':'AI is not connected yet. Open Setup & help to connect it, or use your own SRT subtitles.';
+  $('#mode-hint').textContent=mode==='local'?'Free speech recognition and offline smart moment selection run on this computer. No API charges.':mode==='srt'?'Creates transcript-aligned excerpts locally. Smart selection is not used.':config?.aiReady?'Audio and transcript are sent to OpenAI. Your API account is billed for usage.':'AI is not connected yet. Open Setup & help to connect it, or use your own SRT subtitles.';
   $('#generate').disabled=busy||!online||!config?.ffmpegReady||(mode==='ai'&&!config?.aiReady)||(mode==='local'&&!config?.localReady);
 }
 function empty() {return '<div class="empty-state"><span class="empty-icon">▤</span><div><strong>Your next great clip starts here</strong><p>Upload your first video. Your projects will appear here.</p></div></div>';}

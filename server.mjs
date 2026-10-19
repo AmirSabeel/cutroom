@@ -7,7 +7,7 @@ import { createReadStream, createWriteStream, existsSync, mkdirSync, readFileSyn
 import { readFile, writeFile, stat, rm, open, copyFile, mkdir } from 'node:fs/promises';
 import { pipeline } from 'node:stream/promises';
 import { Transform } from 'node:stream';
-import { normalizeCaptionStyle, parseSrt, validateSegments, chooseExcerpts, validateClips, clipCaptions, toSrt, toAss } from './lib/captions.mjs';
+import { normalizeCaptionStyle, parseSrt, validateSegments, chooseExcerpts, chooseSmartMoments, validateClips, clipCaptions, toSrt, toAss } from './lib/captions.mjs';
 import { runVideo, inspectVideo, renderClip, stopVideoWorkers } from './lib/video.mjs';
 import { transcribe, selectClips } from './lib/ai.mjs';
 
@@ -76,10 +76,10 @@ async function processProject(p) {
     let selected;
     const planFile=path.join(folder,'selection.json');
     if (existsSync(planFile)) selected=JSON.parse(await readFile(planFile,'utf8'));
-    else selected=options.mode==='ai' ? await selectClips(segments,p.duration,options.length,key) : chooseExcerpts(segments,p.duration,options.length);
+    else selected=options.mode==='ai' ? await selectClips(segments,p.duration,options.length,key) : options.mode==='local' ? chooseSmartMoments(segments,p.duration,options.length) : chooseExcerpts(segments,p.duration,options.length);
     selected=validateClips(selected,p.duration);
     await writeFile(planFile,JSON.stringify(selected));
-    save(p,{clips:[],selectionMode:options.mode==='ai'?'AI-selected':'Transcript excerpts'});
+    save(p,{clips:[],selectionMode:options.mode==='ai'?'AI-selected':options.mode==='local'?'Offline smart moments':'Transcript excerpts'});
     for(let i=0;i<selected.length;i++) {
       const clip={...selected[i],index:i+1};
       save(p,{status:'rendering',stage:`Rendering clip ${i+1} of ${selected.length}`,progress:50+Math.round(i/selected.length*45)});

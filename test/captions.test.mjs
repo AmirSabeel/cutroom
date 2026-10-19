@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {parseSrt,validateSegments,chooseExcerpts,validateClips,clipCaptions,toSrt,toAss} from '../lib/captions.mjs';
+import {parseSrt,validateSegments,chooseExcerpts,chooseSmartMoments,validateClips,clipCaptions,toSrt,toAss} from '../lib/captions.mjs';
 
 test('SRT parsing accepts BOM, CRLF, multiline captions and decimal timestamp separators',()=>{
   const result=parseSrt('\uFEFF1\r\n00:00:01,000 --> 00:00:03,500\r\nHello\r\nworld.\r\n\r\n2\r\n00:00:04.000 --> 00:00:05.000\r\nNext.');
@@ -31,4 +31,16 @@ test('transcript fallback selects non-overlapping excerpts and never pads sparse
 });
 test('AI output is rejected if invalid, excessive or overlapping',()=>{
   for(const clips of [[],[{start:-1,end:10}],[{start:0,end:65}],[{start:0,end:20},{start:10,end:30}],Array(4).fill({start:0,end:5})])assert.throws(()=>validateClips(clips,100));
+});
+test('offline smart moments rank useful hooks and keep clips separate',()=>{
+  const segments=[
+    {start:0,end:8,text:'Welcome to the video.'},
+    {start:8,end:16,text:'Here is the secret tip that finally works!'},
+    {start:30,end:38,text:'This is a quiet introduction.'},
+    {start:38,end:48,text:'The important result is amazing?'}
+  ];
+  const result=validateClips(chooseSmartMoments(segments,60,20),60);
+  assert.ok(result.length>=1);
+  assert.match(result[0].reason,/Offline smart selection/);
+  for(let i=1;i<result.length;i++) assert.ok(result[i].start>=result[i-1].end);
 });
