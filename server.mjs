@@ -1,4 +1,4 @@
-import { localReady, transcribeLocal, stopLocalWorkers } from './lib/local-ai.mjs';
+import { localReady, transcribeLocal, downloadYoutube, stopLocalWorkers } from './lib/local-ai.mjs';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -150,6 +150,15 @@ const server=http.createServer(async(req,res)=>{
       if(!String(input.name || '').toLowerCase().endsWith('.mp4')) fail(400,'Please choose an MP4 file.');
       const p={id:randomUUID(),name:String(input.name).replace(/[\x00-\x1f]/g,'').slice(0,180),createdAt:new Date().toISOString(),status:'draft',stage:'Waiting for upload',progress:0,uploaded:false,clips:[]};
       projects.set(p.id,p);save(p);return json(res,201,publicProject(p));
+    }
+    const youtubeCreate=route.match(/^\/api\/projects\/([0-9a-f-]{36})\/youtube$/);
+    if(req.method==='POST'&&youtubeCreate) {
+      const p=projects.get(youtubeCreate[1]);if(!p)fail(404,'Project not found.');
+      if(p.uploaded)fail(409,'This project already has a video.');
+      const input=await body(req);const url=String(input.url||'').trim();
+      save(p,{status:'uploading',stage:'Downloading YouTube video',sourceUrl:url});
+      try { await downloadYoutube(url,path.join(directory(p.id),'source.mp4')); const info=await inspectVideo(path.join(directory(p.id),'source.mp4')); save(p,{...info,name:String(input.name||'YouTube video').slice(0,180),uploaded:true,status:'uploaded',stage:'Ready to create clips',progress:0,error:null}); return json(res,200,publicProject(p)); }
+      catch(e){await rm(path.join(directory(p.id),'source.mp4'),{force:true});save(p,{status:'failed',error:e.message,progress:0});throw Object.assign(e,{status:400});}
     }
     const match=route.match(/^\/api\/projects\/([0-9a-f-]{36})(?:\/(video|process|retry|retranscribe|restyle))?$/);
     if(match) {

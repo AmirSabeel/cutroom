@@ -1,6 +1,6 @@
 let newCaptionStyle={font:'Arial',color:'#FFFFFF',size:42,position:'bottom'}, captionProject=null;
 const $ = selector => document.querySelector(selector);
-let config, projects=[], selectedFile=null, currentUpload=null, busy=false, detailSignature='', online=false;
+let config, projects=[], selectedFile=null, currentUpload=null, busy=false, detailSignature='', online=false, sourceMode='file';
 const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const duration = value => `${Math.floor((value||0)/60)}:${String(Math.floor((value||0)%60)).padStart(2,'0')}`;
 const labels = {draft:'Not uploaded',uploading:'Uploading',uploaded:'Ready to start',queued:'Queued',extracting:'Preparing audio',transcribing:'Transcribing',selecting:'Finding moments',rendering:'Rendering',ready:'Ready',failed:'Needs attention'};
@@ -78,10 +78,12 @@ function uploadVideo(id,file) {
     xhr.send(file);
   });
 }
+document.querySelectorAll('[data-source]').forEach(button=>button.addEventListener('click',()=>{sourceMode=button.dataset.source;document.querySelectorAll('[data-source]').forEach(b=>b.classList.toggle('active',b===button));$('#drop-zone').hidden=sourceMode!=='file';$('#youtube-field').hidden=sourceMode!=='youtube';}));
 $('#generate').addEventListener('click',async()=>{
   if(busy)return;
   formError('');
-  if(!selectedFile&&!currentUpload?.uploaded)return formError('Choose an English MP4 video first.');
+  if(sourceMode==='file'&&!selectedFile&&!currentUpload?.uploaded)return formError('Choose an English MP4 video first.');
+  if(sourceMode==='youtube'&&!currentUpload?.uploaded&&!/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//i.test($('#youtube-url').value.trim()))return formError('Paste a valid YouTube link first.');
   const mode=$('#processing-mode').value;
   let srt='';
   if(mode==='srt') {
@@ -94,9 +96,9 @@ $('#generate').addEventListener('click',async()=>{
   busy=true;updateMode();$('#video-file').disabled=true;$('#generate').textContent='Preparing your video…';
   try {
     if(!currentUpload?.uploaded){
-      currentUpload=await api('/api/projects',{method:'POST',body:JSON.stringify({name:selectedFile.name})});
-      $('#upload-status').hidden=false;$('#upload-progress').value=0;
-      currentUpload=await uploadVideo(currentUpload.id,selectedFile);
+      currentUpload=await api('/api/projects',{method:'POST',body:JSON.stringify({name:sourceMode==='youtube'?'YouTube video':selectedFile.name})});
+      if(sourceMode==='youtube'){ $('#upload-status').hidden=false;$('#upload-message').textContent='Downloading YouTube video…';currentUpload=await api(`/api/projects/${currentUpload.id}/youtube`,{method:'POST',body:JSON.stringify({url:$('#youtube-url').value.trim(),name:'YouTube video'})}); }
+      else { $('#upload-status').hidden=false;$('#upload-progress').value=0;currentUpload=await uploadVideo(currentUpload.id,selectedFile); }
     }
     const p=await api(`/api/projects/${currentUpload.id}/process`,{method:'POST',body:JSON.stringify({mode,srt,captionStyle:newCaptionStyle,length:Number($('#clip-length').value),crop:Number($('#crop-position').value)})});
     projects=await api('/api/projects');renderLists();navigate(`#project/${p.id}`);
