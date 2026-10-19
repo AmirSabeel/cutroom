@@ -226,7 +226,7 @@ const server=http.createServer(async(req,res)=>{
         const length=Number(input.length),crop=Number(input.crop);
         if(![30,45,60].includes(length)||!Number.isFinite(crop)||crop<0||crop>100)fail(400,'Invalid clip length or crop position.');
         if(input.mode==='srt')validateSegments(parseSrt(input.srt || ''),p.duration);
-        save(p,{options:{mode:input.mode,length,crop,captionStyle:normalizeCaptionStyle(input.captionStyle),srt:input.mode==='srt'?String(input.srt):undefined}});
+        save(p,{options:{mode:input.mode,length:input.mode==='local'?30:length,crop,captionStyle:normalizeCaptionStyle(input.captionStyle),srt:input.mode==='srt'?String(input.srt):undefined}});
         enqueue(p);return json(res,202,publicProject(p));
       }
       if(req.method==='POST'&&action==='retry') {
